@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from 'react'
+import { useMemo, useState } from 'react'
 import type { FormEvent } from 'react'
 import './App.css'
 
@@ -361,18 +361,12 @@ function App() {
     })
   }, [searchText, selectedCuisine, sortBy])
 
-  useEffect(() => {
-    if (visibleRestaurants.length === 0) {
-      return
-    }
-    if (!visibleRestaurants.some((restaurant) => restaurant.id === selectedRestaurantId)) {
-      setSelectedRestaurantId(visibleRestaurants[0].id)
-    }
-  }, [visibleRestaurants, selectedRestaurantId])
-
   const selectedRestaurant = useMemo(
-    () => restaurants.find((restaurant) => restaurant.id === selectedRestaurantId) ?? null,
-    [selectedRestaurantId],
+    () =>
+      visibleRestaurants.find((restaurant) => restaurant.id === selectedRestaurantId) ??
+      visibleRestaurants[0] ??
+      null,
+    [selectedRestaurantId, visibleRestaurants],
   )
 
   const selectedMenu = useMemo(
@@ -570,7 +564,7 @@ function App() {
                 <button
                   key={restaurant.id}
                   className={
-                    selectedRestaurantId === restaurant.id
+                    selectedRestaurant?.id === restaurant.id
                       ? 'restaurant-card selected'
                       : 'restaurant-card'
                   }
